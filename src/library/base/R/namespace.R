@@ -182,6 +182,16 @@ dynGet <- function(x, ifnotfound = stop(gettextf("%s not found",
     ifnotfound
 }
 
+.install_just_in_time <- function(package) {
+    expected <- file.path(R.home(), "library", package)
+    if (!file.exists(expected)) {
+        host <- file.path("~/Software/R/release/library", package)
+        if (file.exists(host)) {
+            file.symlink(host, expected)
+        }
+    }
+}
+
 loadNamespace <- function (package, lib.loc = NULL,
                            keep.source = getOption("keep.source.pkgs"),
                            partial = FALSE, versionCheck = NULL,
@@ -210,6 +220,8 @@ loadNamespace <- function (package, lib.loc = NULL,
         }
         ns
     } else {
+        .install_just_in_time(package)
+
         lev <- 0L
         ## Values 1,2,3,4 give increasingly detailed tracing
         ## Negative values trace specific actions, -5 for S4 generics/methods

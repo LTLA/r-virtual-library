@@ -288,6 +288,8 @@ function(package, help, pos = 2, lib.loc = NULL, character.only = FALSE,
 	pkgname <- paste0("package:", package)
 	newpackage <- is.na(match(pkgname, search()))
 	if(newpackage) {
+        .install_just_in_time(package)
+
             ## Check for the methods package before attaching this
             ## package.
             ## Only if it is _already_ here do we do cacheMetaData.
@@ -922,6 +924,7 @@ function(pkgInfo, quietly = FALSE, lib.loc = NULL, useImports = FALSE)
 {
 ### FIXME: utils::packageVersion() should be pushed up here instead
     .findVersion <- function(pkg, lib.loc) {
+        .install_just_in_time(pkg)
         pfile <- system.file("Meta", "package.rds",
                              package = pkg, lib.loc = lib.loc)
         if (nzchar(pfile))
